@@ -1,5 +1,6 @@
 import { /*ALBEvent,*/ APIGatewayProxyEventV2 } from "aws-lambda";
 import { serializeError } from "serialize-error";
+import getCatalog from "./lib/handlers/catalog/getCatalog";
 import { LambdaResponse } from "./lib/routing/model";
 import { Router } from "./lib/routing/Router";
 
@@ -13,16 +14,9 @@ export const proxyHandler = async (
   event: APIGatewayProxyEventV2 /*| ALBEvent*/
 ): Promise<LambdaResponse> => {
   try {
+    console.log(event);
     const router = new Router(event);
-    router.get("/", async (requestParameters) => {
-      return {
-        statusCode: 200,
-        body: {
-          msg: "Hello from lambda",
-          requestParameters,
-        },
-      };
-    });
+    router.get("/data", getCatalog);
 
     const routerResponse = await router.routeRequest();
     return {
